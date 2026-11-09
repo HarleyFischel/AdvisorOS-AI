@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-advisoros}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-advisoros_dev}
+      POSTGRES_DB: ${DATABASE_NAME:-advisoros_development}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    expose:
+      - "5432"
+
+  api:
+    build:
+      context: ./apps/api
+    working_dir: /app
+    command: sh -c "rm -f tmp/pids/server.pid && bundle exec bin/rails db:prepare && bundle exec bin/rails server -b 0.0.0.0"
+    environment:
+      RAILS_ENV: development
+      DATABASE_HOST: db
+      DATABASE_NAME: advisoros_development
+      DATABASE_TEST_NAME: advisoros_test
+      DATABASE_USER: ${DATABASE_USER:-advisoros}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-advisoros_dev}
+      FRONTEND_ORIGINS: http://localhost:5173
+    volumes:
+      - ./apps/api:/app
+      - bundle_cache:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: ./apps/web
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0
+    volumes:
+      - ./apps/web:/app
+      - web_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  bundle_cache:
+  web_node_modules:

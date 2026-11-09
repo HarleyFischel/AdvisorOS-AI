@@ -1,0 +1,23 @@
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: disable
+  SuggestExtensions: false
+  DisabledByDefault: true
+
+plugins:
+  - rubocop-rails
+
+Lint/Syntax:
+  Enabled: true
+Lint/ShadowingOuterLocalVariable:
+  Enabled: true
+Security/Eval:
+  Enabled: true
+Security/JSONLoad:
+  Enabled: true
+Security/YAMLLoad:
+  Enabled: true
+Rails/FindBy:
+  Enabled: true
+Rails/HasManyOrHasOneDependent:
+  Enabled: true
