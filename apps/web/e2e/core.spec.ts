@@ -17,6 +17,15 @@ test.describe("CRM core journey", () => {
     await expect(page.getByRole("heading", { name: "Households" })).toBeVisible();
     await page.getByRole("link", { name: "Pipeline" }).click();
     await expect(page.getByRole("heading", { name: "Pipeline" })).toBeVisible();
+    await page.getByRole("link", { name: "Settings" }).click();
+    await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
+    const theme = page.getByLabel("Color theme");
+    await expect(theme).toHaveValue("system");
+    await theme.selectOption("light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await theme.selectOption("dark");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await theme.selectOption("system");
     await page.locator(".sidebar-footer .text-button").click({ force: true });
     await expect(page).toHaveURL(/login/);
   });

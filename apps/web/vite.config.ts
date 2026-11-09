@@ -1,4 +1,4 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({ plugins: [react()], server: { port: 5173, proxy: { "/api": { target: "http://api:3000", changeOrigin: false } } } });
+export default defineConfig({ plugins: [react()], server: { port: 5173, allowedHosts: ["advisorosai.vluna.store"], proxy: { "/api": { target: "http://api:3000", changeOrigin: false } } } });
