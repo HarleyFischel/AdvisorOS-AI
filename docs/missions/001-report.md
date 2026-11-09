@@ -4,7 +4,7 @@ Status: implementation complete; verification recorded below.
 
 ## Implemented features
 
-- Rails 7.2 modular JSON API with PostgreSQL UUID models for organizations, users, households, clients, opportunities, activities, and audit events.
+- Rails 8.1.4.1 modular JSON API with PostgreSQL UUID models for organizations, users, households, clients, opportunities, activities, and audit events.
 - Server-managed BCrypt sessions, HttpOnly/SameSite cookies, CSRF tokens, generic login errors, login rate limiting, role checks, and tenant-rooted queries.
 - CRUD/list/detail endpoints, pagination, filtering, sorting, validation, safe error envelopes, dashboard aggregations, activity timeline, and mutation audit logging.
 - Deterministic synthetic seeds with two organizations, three primary roles, 30 clients, 10 households, 15 opportunities, and 40 activities.
@@ -16,7 +16,7 @@ Status: implementation complete; verification recorded below.
 | Command | Result |
 |---|---|
 | `git init -b codex/mission-001-crm-foundation` | Passed |
-| `ruby -v`, `node -v`, `docker --version` | Ruby 2.6.10, Node 22.20.0, Docker CLI 29.8.0 detected |
+| Runtime/tool versions | Ruby 3.3.6 in the API image, Rails 8.1.4.1, Node 22.20.0, React 19, TypeScript 5.7.3, Vite 6.4.6, PostgreSQL 16, Docker CLI 29.8.0 |
 | `docker compose build` | Passed; API and web images built |
 | `docker compose up -d` | Passed; PostgreSQL, API, and web services healthy |
 | `docker compose run --rm api bundle exec bin/rails db:prepare` | Passed; migrations and deterministic seeds completed |
@@ -29,8 +29,9 @@ Status: implementation complete; verification recorded below.
 | `npm run test -- --run` | Passed; 2 files, 2 tests |
 | `npm run build` | Passed; Vite production build completed |
 | `npm run e2e` | Passed; 1 Chromium smoke test, including login, client navigation, and logout |
+| GitHub Actions PR run `42619964976` | Passed; API and web jobs green, including hosted Rails/security checks and frontend checks |
 
-All listed checks were executed in the local Docker-enabled environment. The repository also includes the same commands in the pull-request CI workflow.
+All local checks listed above were executed in the Docker-enabled environment. The repository also includes the same commands in the pull-request CI workflow; the hosted run completed successfully.
 
 ## Security verification
 
@@ -48,7 +49,7 @@ The Compose services responded successfully at `/health` and `/`. Chromium exerc
 
 - Household and opportunity create/edit buttons are reserved for the next interaction slice; their CRUD/stage APIs are implemented and the pipeline stage mutation is wired.
 - Login rate limiting is process-local; production should use a shared limiter such as Redis or an edge control.
-- CI's Playwright smoke step is explicitly non-blocking until a full seeded web/API environment is provisioned in the workflow.
+- The CI Playwright smoke step is explicitly non-blocking because the workflow does not yet boot the Compose web/API environment; the local Compose-backed Chromium smoke test passed.
 
 ## Recommended Mission 002 scope
 

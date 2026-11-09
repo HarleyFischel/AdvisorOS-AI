@@ -2,7 +2,7 @@
 
 ## Components
 
-The system is a modular monolith: Rails 7.2 owns authentication, tenant-scoped domain logic, JSON APIs, validation, audit events, and future background jobs. React/Vite is a separate browser client that communicates through the API. PostgreSQL is the system of record. Docker Compose provides local development only.
+The system is a modular monolith: Rails 8.1.4.1 owns authentication, tenant-scoped domain logic, JSON APIs, validation, audit events, and future background jobs. React/Vite is a separate browser client that communicates through the API. PostgreSQL is the system of record. Docker Compose provides local development only.
 
 ## Data flow and tenant boundaries
 
