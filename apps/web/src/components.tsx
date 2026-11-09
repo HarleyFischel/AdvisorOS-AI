@@ -1,5 +1,22 @@
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "./auth";
+
+type ErrorBoundaryProps = { children: ReactNode };
+type ErrorBoundaryState = { hasError: boolean };
+
+export class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): ErrorBoundaryState { return { hasError: true }; }
+
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error("AdvisorOS UI render error", error, info); }
+
+  render() {
+    if (!this.state.hasError) return this.props.children;
+    return <main className="error-screen"><div className="panel error-panel"><span className="eyebrow">ADVISOROS CRM</span><h2>We hit a display error.</h2><p>Refresh this workspace to continue. Your saved CRM data is unchanged.</p><button className="primary-button" onClick={() => window.location.reload()}>Refresh workspace</button></div></main>;
+  }
+}
 
 export function AppShell() {
   const { user, logout } = useAuth(); const navigate = useNavigate();
