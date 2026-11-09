@@ -1,0 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import { getData } from "../api";
+import type { Household } from "../types";
+import { PageHeader, StateMessage } from "../components";
+export function Households() { const query = useQuery({ queryKey: ["households"], queryFn: () => getData<{ data: Household[] }>("/api/v1/households") }); if (query.isPending) return <StateMessage title="Loading households" message="Preparing planning relationships…" />; if (query.isError) return <StateMessage error title="Could not load households" message={query.error.message} />; return <><PageHeader title="Households" description="The planning context behind each client relationship." action={<button className="primary-button">＋ New household</button>} /><div className="card-grid">{query.data.data.map((household) => <article className="panel household-card" key={household.id}><div className="household-icon">⌂</div><div><h3>{household.name}</h3><p>{household.description}</p><small>{household.client_count} clients</small></div><button className="icon-button" aria-label={`More actions for ${household.name}`}>•••</button></article>)}</div></>; }
