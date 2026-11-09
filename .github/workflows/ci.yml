@@ -6,6 +6,12 @@ on:
 jobs:
   api:
     runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      DATABASE_HOST: localhost
+      DATABASE_USER: advisoros
+      DATABASE_PASSWORD: advisoros_dev
+      DATABASE_TEST_NAME: advisoros_test
     services:
       postgres:
         image: postgres:16
@@ -23,7 +29,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with: { ruby-version: '3.3.6', bundler-cache: true, working-directory: apps/api }
       - run: bundle exec bin/rails db:prepare
-        env: { RAILS_ENV: test, DATABASE_HOST: localhost, DATABASE_USER: advisoros, DATABASE_PASSWORD: advisoros_dev, DATABASE_TEST_NAME: advisoros_test }
       - run: bundle exec rubocop
       - run: bundle exec brakeman --no-pager
       - run: bundle exec rspec
