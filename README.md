@@ -56,4 +56,4 @@ Run the app, sign in with the admin demo account, and capture the Overview, Clie
 
 ## Known limitations and roadmap
 
-Mission 001 does not connect to a paid LLM, brokerage, document store, or AWS account. Create/edit modal forms are represented by the backend API and the polished read flows; Mission 002 should complete inline client/household/opportunity forms, add background jobs and approved AI tools, and harden production observability/deployment.
+Mission 001 does not connect to a paid LLM, brokerage, document store, or AWS account. Client create/edit forms are functional; Mission 002 should complete household/opportunity forms, add background jobs and approved AI tools, and harden production observability/deployment.
