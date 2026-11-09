@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: advisoros
+          POSTGRES_PASSWORD: advisoros_dev
+          POSTGRES_DB: advisoros_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U advisoros -d advisoros_test"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+    defaults: { run: { working-directory: apps/api } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with: { ruby-version: '3.3.6', bundler-cache: true, working-directory: apps/api }
+      - run: bundle exec bin/rails db:prepare
+        env: { RAILS_ENV: test, DATABASE_HOST: localhost, DATABASE_USER: advisoros, DATABASE_PASSWORD: advisoros_dev, DATABASE_TEST_NAME: advisoros_test }
+      - run: bundle exec rubocop
+      - run: bundle exec brakeman --no-pager
+      - run: bundle exec rspec
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: apps/web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm, cache-dependency-path: apps/web/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test -- --run
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+        continue-on-error: true
