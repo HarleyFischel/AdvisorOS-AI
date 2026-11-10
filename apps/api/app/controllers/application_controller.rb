@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
     render_error("Resource not found", :not_found)
   end
   rescue_from ActionController::InvalidAuthenticityToken do
-    render_error("Request could not be verified", :unprocessable_entity)
+    render_error("Request could not be verified", :unprocessable_content)
   end
 
   helper_method :current_user
@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_validation_error(record)
-    render_error("Validation failed", :unprocessable_entity, details: record.errors.to_hash)
+    render_error("Validation failed", :unprocessable_content, details: record.errors.to_hash)
   end
 
   def pagination(relation)

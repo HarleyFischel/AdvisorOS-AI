@@ -27,6 +27,6 @@ RSpec.describe "API security", type: :request do
   it "rejects a client assigned to a cross-tenant household" do
     foreign_household = create(:household, organization: other_organization)
     post "/api/v1/clients", params: { first_name: "Cross", last_name: "Tenant", household_id: foreign_household.id }, headers: csrf_headers
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
   end
 end

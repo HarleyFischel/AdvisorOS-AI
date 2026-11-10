@@ -38,7 +38,7 @@ module Api
 
       def destroy
         client = find_client
-        return render_error("Clients with opportunities or activities cannot be deleted", :unprocessable_entity) if client.opportunities.exists? || client.activities.exists?
+        return render_error("Clients with opportunities or activities cannot be deleted", :unprocessable_content) if client.opportunities.exists? || client.activities.exists?
 
         client.destroy!
         audit!("client.deleted", client)

@@ -32,7 +32,7 @@ module Api
 
       def destroy
         household = find_household
-        return render_error("Households with clients cannot be deleted", :unprocessable_entity) if household.clients.exists?
+        return render_error("Households with clients cannot be deleted", :unprocessable_content) if household.clients.exists?
 
         household.destroy!
         audit!("household.deleted", household)
