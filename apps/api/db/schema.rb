@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_11_09_000006) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_000007) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "organization_id", null: false
@@ -74,6 +74,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_11_09_000006) do
     t.datetime "updated_at", null: false
     t.index ["organization_id", "name"], name: "index_households_on_organization_id_and_name"
     t.index ["organization_id"], name: "index_households_on_organization_id"
+  end
+
+  create_table "login_rate_limits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "key", null: false
+    t.datetime "window_started_at", null: false
+    t.integer "attempts", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_login_rate_limits_on_key", unique: true
+    t.check_constraint "attempts >= 0", name: "login_rate_limits_attempts_nonnegative"
   end
 
   create_table "opportunities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

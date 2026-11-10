@@ -1,21 +1,25 @@
 class LoginRateLimiter
   LIMIT = 10
   WINDOW = 15.minutes
-  @mutex = Mutex.new
-  @attempts = {}
 
   def self.allow?(key)
-    now = Time.current.to_i
-    @mutex.synchronize do
-      @attempts[key] = @attempts.fetch(key, []).select { |timestamp| timestamp > now - WINDOW.to_i }
-      return false if @attempts[key].length >= LIMIT
-
-      @attempts[key] << now
-      true
+    now = Time.current
+    LoginRateLimit.transaction do
+      limiter = LoginRateLimit.lock.find_or_initialize_by(key: key)
+      if limiter.new_record? || limiter.window_started_at <= now - WINDOW
+        limiter.assign_attributes(window_started_at: now, attempts: 1)
+        limiter.save!
+        true
+      elsif limiter.attempts >= LIMIT
+        false
+      else
+        limiter.increment!(:attempts)
+        true
+      end
     end
   end
 
   def self.reset(key)
-    @mutex.synchronize { @attempts.delete(key) }
+    LoginRateLimit.where(key: key).delete_all
   end
 end
