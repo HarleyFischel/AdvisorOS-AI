@@ -10,7 +10,7 @@ The browser obtains a CSRF token, submits credentials to the Rails session endpo
 
 ## Authentication and authorization
 
-`has_secure_password` stores BCrypt digests. Login errors are deliberately generic and rate-limited in-process. HttpOnly, SameSite cookies avoid localStorage token risk. CSRF protection is required for state changes. Admins manage all organization records, advisors manage authorized CRM records, and viewers have read-only access. The frontend mirrors this model for usability but is never the security boundary.
+`has_secure_password` stores BCrypt digests. Login errors are deliberately generic and rate-limited with a PostgreSQL-backed counter so the baseline remains effective across Rails processes. HttpOnly, SameSite cookies avoid localStorage token risk. CSRF protection is required for state changes. Admins manage all organization records, advisors manage authorized CRM records, and viewers have read-only access. The frontend mirrors this model for usability but is never the security boundary.
 
 ## Future AI integration
 

@@ -49,7 +49,7 @@ make lint       # RuboCop, Brakeman, TypeScript, ESLint
 docker compose run --rm web npm run e2e
 ```
 
-The Playwright smoke test expects the Compose services and seeded demo data to be running. It covers login, client list/detail navigation, households, pipeline, theme switching, and logout. CI runs all non-browser checks on pull requests and attempts Playwright when the service environment is available.
+The Playwright smoke suite expects the Compose services and seeded demo data to be running. It covers admin client creation/editing/activity logging/safe deletion, household creation/editing/deletion, opportunity creation/editing/stage changes/deletion, viewer restrictions, theme switching, and logout. CI runs the API and frontend validation checks on pull requests; the local Compose-backed browser suite is the end-to-end validation path.
 
 ## Screenshots
 
@@ -57,4 +57,4 @@ Run the app, sign in with the admin demo account, and capture the Overview, Clie
 
 ## Known limitations and roadmap
 
-Mission 001 does not connect to a paid LLM, brokerage, document store, or AWS account. Client create/edit forms are functional; household/opportunity mutation buttons and activity logging remain reserved for Mission 002. Login rate limiting is process-local and should use a shared production control. The demo Vite server is not a production deployment target.
+Mission 001 does not connect to a paid LLM, brokerage, document store, or AWS account. Activity deletion is intentionally not exposed, and clients/households with important related records are protected from deletion. Login rate limiting uses a PostgreSQL-backed shared counter for this local modular-monolith baseline; a production deployment should add monitoring, cleanup/retention, and consider an edge or Redis limiter at higher scale. The demo Vite server is not a production deployment target.
