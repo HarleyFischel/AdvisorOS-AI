@@ -34,7 +34,7 @@ Status: implementation complete; verification recorded below.
 | `npm run e2e` | Passed; 2 Chromium journeys covering admin client create/edit/activity/safe-delete, household create/edit/delete, opportunity create/edit/stage-change/delete, viewer restrictions, themes, and logout |
 | PostgreSQL-backed login limiter | Passed as part of the 26-example RSpec suite; the shared counter blocks after 10 attempts and resets after successful authentication |
 | Public tunnel verification | Passed; `https://advisorosai.vluna.store` returned HTTP 200, served Vite modules, forwarded CSRF, and completed demo login/dashboard rendering |
-| GitHub Actions PR run `42832760929` | Passed; API and web jobs green on pinned Ubuntu 24.04, including hosted Rails/security checks and frontend checks |
+| GitHub Actions PR run `42861689994` | Passed; API and web jobs green on pinned Ubuntu 24.04, including hosted Rails/security checks, frontend checks, and Playwright |
 
 All local checks listed above were executed in the Docker-enabled environment. The repository also includes the same commands in the pull-request CI workflow; the hosted run completed successfully.
 
