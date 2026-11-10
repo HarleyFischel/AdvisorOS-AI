@@ -33,7 +33,7 @@ Status: implementation complete; verification recorded below.
 | `npm run build` | Passed; Vite production build completed |
 | `npm run e2e` | Passed; 1 Chromium journey covering login, clients list/detail, households, pipeline, theme switching, and logout |
 | Public tunnel verification | Passed; `https://advisorosai.vluna.store` returned HTTP 200, served Vite modules, forwarded CSRF, and completed demo login/dashboard rendering |
-| GitHub Actions PR run `42624435453` | Passed; API and web jobs green, including hosted Rails/security checks and frontend checks |
+| GitHub Actions PR run `42832760929` | Passed; API and web jobs green on pinned Ubuntu 24.04, including hosted Rails/security checks and frontend checks |
 
 All local checks listed above were executed in the Docker-enabled environment. The repository also includes the same commands in the pull-request CI workflow; the hosted run completed successfully.
 
