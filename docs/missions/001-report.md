@@ -8,7 +8,9 @@ Status: implementation complete; verification recorded below.
 - Server-managed BCrypt sessions, HttpOnly/SameSite cookies, CSRF tokens, generic login errors, login rate limiting, role checks, and tenant-rooted queries.
 - CRUD/list/detail endpoints, pagination, filtering, sorting, validation, safe error envelopes, dashboard aggregations, activity timeline, and mutation audit logging.
 - Deterministic synthetic seeds with two organizations, three primary roles, 30 clients, 10 households, 15 opportunities, and 40 activities.
-- Responsive dark fintech React/TypeScript SPA with login, dashboard, clients, client detail, client create/edit forms, households, pipeline, activities display, settings, and AI placeholder.
+- Responsive React/TypeScript SPA with dark/light themes, System as the default, login, dashboard, clients, client detail, client create/edit forms, households, pipeline, activities display, settings, and AI placeholder.
+- Fixed the API response unwrapping defect that caused blank screens on clients, households, opportunities, and client detail routes; added a visible React render-error recovery screen.
+- Added the explicit `advisorosai.vluna.store` Vite host allowlist for the user-provided Cloudflare tunnel. Public root, Vite modules, CSRF, login, and dashboard were browser-verified through the tunnel.
 - Docker Compose, Makefile, environment example, CI workflow, architecture/ADR/security/AI/AWS documentation.
 
 ## Commands executed and results
@@ -23,13 +25,15 @@ Status: implementation complete; verification recorded below.
 | `docker compose run --rm api bundle exec rspec` | Passed; 8 examples, 0 failures |
 | `docker compose run --rm api bundle exec rubocop` | Passed; 48 files, no offenses |
 | `docker compose run --rm api bundle exec brakeman --no-pager` | Passed; 0 security warnings |
-| `npm ci` | Passed; lockfile installed; npm reported 10 transitive audit findings (8 moderate, 2 critical) for follow-up |
+| `npm ci` | Passed; lockfile installed from the committed package lock |
+| `npm audit --audit-level=moderate` | Blocked; npm registry DNS was unavailable (`getaddrinfo ENOTFOUND registry.npmjs.org`) |
 | `npm run typecheck` | Passed |
 | `npm run lint` | Passed |
-| `npm run test -- --run` | Passed; 2 files, 2 tests |
+| `npm run test -- --run` | Passed; 3 files, 3 tests |
 | `npm run build` | Passed; Vite production build completed |
-| `npm run e2e` | Passed; 1 Chromium smoke test, including login, client navigation, and logout |
-| GitHub Actions PR run `42619964976` | Passed; API and web jobs green, including hosted Rails/security checks and frontend checks |
+| `npm run e2e` | Passed; 1 Chromium journey covering login, clients list/detail, households, pipeline, theme switching, and logout |
+| Public tunnel verification | Passed; `https://advisorosai.vluna.store` returned HTTP 200, served Vite modules, forwarded CSRF, and completed demo login/dashboard rendering |
+| GitHub Actions PR run `42624435453` | Passed; API and web jobs green, including hosted Rails/security checks and frontend checks |
 
 All local checks listed above were executed in the Docker-enabled environment. The repository also includes the same commands in the pull-request CI workflow; the hosted run completed successfully.
 
@@ -50,6 +54,7 @@ The Compose services responded successfully at `/health` and `/`. Chromium exerc
 - Household and opportunity create/edit buttons are reserved for the next interaction slice; their CRUD/stage APIs are implemented and the pipeline stage mutation is wired.
 - Login rate limiting is process-local; production should use a shared limiter such as Redis or an edge control.
 - The CI Playwright smoke step is explicitly non-blocking because the workflow does not yet boot the Compose web/API environment; the local Compose-backed Chromium smoke test passed.
+- Dependency audit remains externally blocked: `npm audit` could not reach the npm registry in this environment. No dependency scan result is being represented as passed.
 
 ## Recommended Mission 002 scope
 

@@ -6,6 +6,7 @@ AdvisorOS AI is an interview-ready financial advisor CRM foundation: a modular R
 
 - Ruby 3.3.6, Rails 8.1.4.1, PostgreSQL 16
 - React 19, TypeScript 5.7.3, Vite 6.4.6, TanStack Query 5
+- Dark and light themes with System as the default preference
 - RSpec, Vitest, Playwright, RuboCop, Brakeman
 - Docker Compose for local API, web, and database services
 
@@ -20,7 +21,7 @@ make up
 open http://localhost:5173 # macOS; use a browser on Linux/Codespaces
 ```
 
-`make setup` builds the images, prepares the database, and loads deterministic synthetic demo data. PostgreSQL is exposed only to the Compose network.
+`make setup` builds the images, prepares the database, and loads deterministic synthetic demo data. PostgreSQL is exposed only to the Compose network. The web UI is available at `http://localhost:5173`; choose System, Light, or Dark under Settings. The Vite development server can also be placed behind a tunnel when its hostname is added to `apps/web/vite.config.ts`.
 
 Demo accounts all use `DemoPass!2026`:
 
@@ -48,7 +49,7 @@ make lint       # RuboCop, Brakeman, TypeScript, ESLint
 docker compose run --rm web npm run e2e
 ```
 
-The Playwright smoke test expects the Compose services and seeded demo data to be running. CI runs all non-browser checks on pull requests and attempts Playwright when the service environment is available.
+The Playwright smoke test expects the Compose services and seeded demo data to be running. It covers login, client list/detail navigation, households, pipeline, theme switching, and logout. CI runs all non-browser checks on pull requests and attempts Playwright when the service environment is available.
 
 ## Screenshots
 
@@ -56,4 +57,4 @@ Run the app, sign in with the admin demo account, and capture the Overview, Clie
 
 ## Known limitations and roadmap
 
-Mission 001 does not connect to a paid LLM, brokerage, document store, or AWS account. Client create/edit forms are functional; Mission 002 should complete household/opportunity forms, add background jobs and approved AI tools, and harden production observability/deployment.
+Mission 001 does not connect to a paid LLM, brokerage, document store, or AWS account. Client create/edit forms are functional; household/opportunity mutation buttons and activity logging remain reserved for Mission 002. Login rate limiting is process-local and should use a shared production control. The demo Vite server is not a production deployment target.
